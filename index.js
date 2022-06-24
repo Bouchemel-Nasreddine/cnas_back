@@ -5,6 +5,7 @@ const PORT =  process.env.PORT || 5000;
 
 const app = express();
 
+const test = 5;
 
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
