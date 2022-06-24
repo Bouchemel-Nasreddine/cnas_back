@@ -1,4 +1,7 @@
+import mysql from 'mysql' 
+
 const express =require('express');
+
 
 // var mysql = require('mysql');
 const PORT =  process.env.PORT || 5000;
@@ -25,6 +28,12 @@ connection.connect((err)=>{
 //midedleware
 
 app.use(express.json());
+
+//------------------------root---------------------------------------
+
+app.get('/', (req, res)=>{
+  res.send('hello to our cnas project, Chinotech is wishing you a good day :)')
+})
 
 //-------------------------auth--------------------------------------
 
@@ -72,11 +81,20 @@ app.post('/login', (req, res)=> {
 
 app.post('/patient', (req, res) =>{
 
-  const data = req.body;
+  // const data = req.body;
 
-  connection.query("INSERT INTO patient SET? ", data, (error, results, fields) => {
-    if (error) throw error;
-    res.send(req.body);
+  // connection.query("INSERT INTO patient SET? ", data, (error, results, fields) => {
+  //   if (error) throw error;
+  //   res.send(req.body);
+  // })
+
+  var pool = mysql.createPool({
+    host: 'remotemysql.com',
+    user: 'jOPNYDXCCM',
+    password: 'BzAUV81FUK',
+    database: 'jOPNYDXCCM',
+    connectionLimit: 100,
+    multipleStatements: true,
   })
 
 }  )
