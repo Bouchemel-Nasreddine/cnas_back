@@ -18,7 +18,7 @@ var mysql      = require('mysql');
 // });
 
   
-var connection = mysql.createPool({
+var connection = mysql.createConnection({
   host: 'remotemysql.com',
   user: 'jOPNYDXCCM',
   password: 'BzAUV81FUK',
