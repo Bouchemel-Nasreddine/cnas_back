@@ -105,7 +105,9 @@ app.get('/patient', function(req, res)  {
     "": ""
   };
 
-  connection.query("SELECT * FROM Patient;", (error, rows, fields) => {
+  connection.query("SELECT * FROM patient;", (error, rows, fields) => {
+    if (error) throw error
+    console.log('rows: ' + rows);
     if(rows.length != 0){
                   data = rows;
                   res.json(data);
@@ -124,7 +126,7 @@ app.get('/patient/:id', function(req, res)  {
     "": ""
   };
 
-  connection.query("SELECT * FROM Patient where patient.id_patient = '"+id+"';", (error, rows, fields) => {
+  connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, rows, fields) => {
     if(rows.length != 0){
                   data = rows;
                   res.json(data);
