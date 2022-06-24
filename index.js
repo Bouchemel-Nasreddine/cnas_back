@@ -64,7 +64,7 @@ app.post('/login', (req, res)=> {
     })
   } else
   if (type == 'ets') {
-    connection.query("Select * from ets where ets.phone =  '"+credential+"' AND ets.password = '"+password+"' ;", data, (error, rows, fields)=>{
+    connection.query("Select * from ETS where ETS.phone =  '"+credential+"' AND ETS.password = '"+password+"' ;", data, (error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
         res.send(rows)
@@ -107,7 +107,6 @@ app.get('/patient', function(req, res)  {
 
   connection.query("SELECT * FROM patient;", (error, rows, fields) => {
     if (error) throw error
-    console.log('rows: ' + rows);
     if(rows.length != 0){
                   data = rows;
                   res.json(data);
@@ -204,7 +203,7 @@ app.put('/demande/:id/:etat', (req, res)=>{
 app.post('/ets', (req, res) => {
   const data = req.body;
 
-  connection.query("INSERT INTO ets SET?", data, (error, results, fields)=>{
+  connection.query("INSERT INTO ETS SET?", data, (error, results, fields)=>{
     if (error) throw error
     res.send(req.body);
   })
@@ -215,7 +214,7 @@ app.post('/ets', (req, res) => {
 app.get('/ets', (req, res) => {
   var data = {}
 
-  connection.query("Select * from ets", data, (error, rows, fields)=> {
+  connection.query("Select * from ETS", data, (error, rows, fields)=> {
     if (error) throw error;
     if (rows.length != 0) {
       data = rows;
@@ -235,7 +234,7 @@ app.get('/ets/:id', function(req, res)  {
     "": ""
   };
 
-  connection.query("SELECT * FROM ets where ets.id_ets = '"+id+"';", (error, rows, fields) => {
+  connection.query("SELECT * FROM ETS where ETS.id_ets = '"+id+"';", (error, rows, fields) => {
     if(rows.length != 0){
                   data = rows;
                   res.json(data);
