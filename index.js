@@ -10,12 +10,23 @@ const app = express();
 const test = 5;
 
 var mysql      = require('mysql');
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '',
-  database :'cnas'
-});
+// var connection = mysql.createConnection({
+//   host     : 'localhost',
+//   user     : 'root',
+//   password : '',
+//   database :'cnas'
+// });
+
+  
+var connection = mysql.createPool({
+  host: 'remotemysql.com',
+  user: 'jOPNYDXCCM',
+  password: 'BzAUV81FUK',
+  database: 'jOPNYDXCCM',
+  connectionLimit: 100,
+  multipleStatements: true,
+})
+
 connection.connect((err)=>{
     if(err)
     {
@@ -80,20 +91,11 @@ app.post('/login', (req, res)=> {
 
 app.post('/patient', (req, res) =>{
 
-  // const data = req.body;
+  const data = req.body;
 
-  // connection.query("INSERT INTO patient SET? ", data, (error, results, fields) => {
-  //   if (error) throw error;
-  //   res.send(req.body);
-  // })
-
-  var pool = mysql.createPool({
-    host: 'remotemysql.com',
-    user: 'jOPNYDXCCM',
-    password: 'BzAUV81FUK',
-    database: 'jOPNYDXCCM',
-    connectionLimit: 100,
-    multipleStatements: true,
+  connection.query("INSERT INTO patient SET? ", data, (error, results, fields) => {
+    if (error) throw error;
+    res.send(req.body);
   })
 
 }  )
