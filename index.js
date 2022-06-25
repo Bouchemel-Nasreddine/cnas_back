@@ -1,13 +1,12 @@
 
 const express =require('express');
+const cors = require('cors');
 
 
 // var mysql = require('mysql');
 const PORT =  process.env.PORT || 5000;
 
 const app = express();
-
-const test = 5;
 
 var mysql      = require('mysql');
 // var connection = mysql.createConnection({
@@ -38,6 +37,7 @@ connection.connect((err)=>{
 //midedleware
 
 app.use(express.json());
+app.use(cors)
 
 //------------------------root---------------------------------------
 
@@ -57,8 +57,14 @@ app.post('/login', (req, res)=> {
     connection.query("Select * from patient where patient.num_ass_soc =  '"+credential+"' AND patient.password = '"+password+"' ;", data, (error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
+        // res.setHeader('Access-Control-Allow-Origin', '*');
+        // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        // res.setHeader('Access-Control-Allow-Credentials', true);
+
         res.send(rows)
       } else {
+
         res.send('credentials not found')
       }
     })
@@ -310,7 +316,7 @@ app.post('/staff_cnas', (req, res) =>{
 
   connection.query("INSERT INTO staff_cnas SET? ", data, (error, results, fields) => {
     if (error) throw error;
-    res.send(req.body);
+    res.send(req.body); 
   })
 
 }  )
