@@ -86,8 +86,9 @@ app.use(express.json());
 app.use(function(req, res, next) {
   res.setTimeout(200);
   res.setHeader('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Allow-Methods', 'GET, POST ,PUT, OPTIONS');
+  res.header('Access-Control-Allow-Methods', 'GET, POST ,PUT, OPTIONS, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Max-Age', '86400')
   next();
 });
 
