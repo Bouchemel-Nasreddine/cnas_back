@@ -503,30 +503,69 @@ app.get('/transport', (req, res) => {
 
 app.get('/transport/:id', function(req, res)  {
   const id = req.params.id;
-  var data = {
+  var transport = {
     "": ""
   };
 
-  var data2 = {
-    "ets":""
+  var ets = {
+    "":""
   };
+
+  var demande = {
+
+  };
+
+  var patient = {
+
+  };
+
+  var proposition = {};
 
   connection.query("SELECT * FROM transport where transport.id_transport = '"+id+"' ;", (error, rows, fields) => {
     if(rows.length != 0){
-      data = rows[0];
+      transport = rows[0];
       console.log(data['id_ets']);
-      connection.query("SELECT * FROM ETS where '"+data["id_ets"]+"' = ETS.id_ets ;", (error2, rows2, fields2 ) => {
+      connection.query("SELECT * FROM ETS where '"+transport["id_ets"]+"' = ETS.id_ets ;", (error2, rows2, fields2 ) => {
         if (error2) throw error2
         console.log(rows2);
-        data2 = rows2[0];
-        //var finalData = Object.assign(data, data2); 
+        ets = rows2[0];
+      })  ;
 
-        var finalData = {
-          ...data,
-          "ets": data2,
-        }
-        res.send(finalData)
-      })
+      connection.query("SELECT * FROM proposition where '"+transport["id_proposition"]+"' = proposition.id_proposition ;", (error2, rows2, fields2 ) => {
+        if (error2) throw error2
+        console.log(rows2);
+        proposition = rows2[0];
+      })  ;
+
+
+      connection.query("SELECT * FROM demande where '"+proposition["id_demande"]+"' = demande.id_demande ;", (error2, rows2, fields2 ) => {
+        if (error2) throw error2
+        console.log(rows2);
+        demande = rows2[0];
+      })  ;
+
+      connection.query("SELECT * FROM patient where '"+demande["id_patient"]+"' = patient.id_patient ;", (error2, rows2, fields2 ) => {
+        if (error2) throw error2
+        console.log(rows2);
+        patient = rows2[0];
+      })  ;
+
+      var demandeFinal = {
+        ...demande,
+        "patient": patient, 
+      }
+
+      var propositionFinal = {
+        ...proposition,
+        "demande": demandeFinal,
+      }
+
+      var finalData = {
+        "id_transport": transport['id_transport'],
+        "ets": ets,
+        "propositionFinal": propositionFinal,
+        
+      }
               }else{
                   data = 'No data Found..';
                   res.json(data);
