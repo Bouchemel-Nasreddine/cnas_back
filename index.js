@@ -519,7 +519,8 @@ app.get('/transport/:id', function(req, res)  {
         if (error2) throw error2
         console.log(rows2);
         data2 = rows2[0];
-        res.send(data,  data2)
+        var finalData = Object.assign(data, data2); 
+        res.send(finalData)
       })
               }else{
                   data = 'No data Found..';
