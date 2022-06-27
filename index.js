@@ -1,6 +1,7 @@
 
 const express =require('express');
 const cors = require('cors');
+var mysql      = require('mysql');
 
 
 // var mysql = require('mysql');
@@ -8,7 +9,6 @@ const PORT =  process.env.PORT || 5000;
 
 const app = express();
 
-var mysql      = require('mysql');
 // var connection = mysql.createConnection({
 //   host     : 'localhost',
 //   user     : 'root',
@@ -80,8 +80,8 @@ const corsOptions = {
 
 //midedleware
 
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(cors(corsOptions))
 
 //------------------------root---------------------------------------
 
@@ -97,10 +97,10 @@ app.post('/login', (req, res)=> {
   const credential = req.body['credential']
   const password = req.body['password']
 
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-  res.setHeader('Access-Control-Allow-Credentials', true);
+  // res.setHeader('Access-Control-Allow-Origin', '*');
+  // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  // res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  // res.setHeader('Access-Control-Allow-Credentials', true);
 
   if (type == 'patient') {
     connection.query("Select * from patient where patient.num_ass_soc =  '"+credential+"' AND patient.password = '"+password+"' ;", data, (error, rows, fields)=>{
