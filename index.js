@@ -84,7 +84,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use(function(req, res, next) {
-  console.log(req);
+  //console.log(req);
   res.setTimeout(200);
   res.setHeader('Access-Control-Allow-Origin', "*");
   res.header('Access-Control-Allow-Methods', 'GET, POST ,PUT, OPTIONS, DELETE');
@@ -272,14 +272,18 @@ app.post('/ets', (req, res) => {
 app.get('/ets', (req, res) => {
   var data = {}
 
-  connection.query("Select * from ETS", data, (error, rows, fields)=> {
+
+  connection.query("Select * from ETS;", data, (error, rows, fields)=> {
     if (error) throw error;
+    console.log("ddddd")
     if (rows.length != 0) {
+      console.log("ddddd")
       data = rows;
     } else {
       data = [];
     }
-    res.send(data);
+    console.log(data)
+    res.json(data);
   })
 
 } )
@@ -503,10 +507,20 @@ app.get('/transport/:id', function(req, res)  {
     "": ""
   };
 
-  connection.query("SELECT * FROM transport where transport.id_transport = '"+id+"';", (error, rows, fields) => {
+  var data2 = {
+    "ets":""
+  };
+
+  connection.query("SELECT * FROM transport where transport.id_transport = '"+id+"' ;", (error, rows, fields) => {
     if(rows.length != 0){
-                  data = rows;
-                  res.json(data);
+      data = rows[0];
+      console.log(data['id_ets']);
+      connection.query("SELECT * FROM ETS where '"+data["id_ets"]+"' = ETS.id_ets ;", (error2, rows2, fields2 ) => {
+        if (error2) throw error2
+        console.log(rows2);
+        data2 = rows2[0];
+        res.json(data + data2)
+      })
               }else{
                   data = 'No data Found..';
                   res.json(data);
