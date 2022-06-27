@@ -467,43 +467,70 @@ app.put('/reclamation/:id/:etat', (req, res)=>{
 })
 
 
-// app.post('/user', (req,res)=>{
+//----------------------------demande--------------------------------------------
 
-//     const data =req.body;
-//     connection.query("INSERT INTO users SET?",data,(error,results,fields)=>{
-//      if (error) throw error ;
-//      res.send(req.body)
-//      connection.end();
+app.post('/transport', (req, res) =>{
+
+  const data = req.body;
+
+  connection.query("INSERT INTO transport SET? ", data, (error, results, fields) => {
+    if (error) throw error;
+    res.send(req.body);
+  })
+
+}  )
+
+app.get('/transport', (req, res) => {
+  var data = {}
+
+  connection.query("Select * from transport", data, (error, rows, fields)=> {
+    if (error) throw error;
+    if (rows.length != 0) {
+      data = rows;
+    } else {
+      data = [];
+    }
+    res.send(data);
+  })
+
+} )
 
 
-//     }
+
+app.get('/transport/:id', function(req, res)  {
+  const id = req.params.id;
+  var data = {
+    "": ""
+  };
+
+  connection.query("SELECT * FROM transport where transport.id_transport = '"+id+"';", (error, rows, fields) => {
+    if(rows.length != 0){
+                  data = rows;
+                  res.json(data);
+              }else{
+                  data = 'No data Found..';
+                  res.json(data);
+              }
+  })
+
+} )
+
+
+app.put('/demande/:id/:etat', (req, res)=>{
+  const id = req.params.id;
+  const etat = req.params.etat;
+
+  connection.query("UPDATE demande SET demande.etat='"+etat+"' where demande.id_demande = '"+id+"';", (error, results, fields) => {
+    if (error) throw error;
+    res.send("done")
+  })
+})
 
 
 
-//     );
-    
- 
-
-    
-// });
+//-----------------------------------------------------
 
 
-
-//   app.get('/users',function(req,res){
-//     var data = {
-//         "Data":""
-//     };
-   
-//     connection.query("SELECT * from users",function(err, rows, fields){
-//         if(rows.length != 0){
-//             data["Data"] = rows;
-//             res.json(data);
-//         }else{
-//             data["Data"] = 'No data Found..';
-//             res.json(data);
-//         }
-//     });
-// });
 
 app.listen(PORT, () => {
     console.log("Server started listening on PORT : " + PORT);
