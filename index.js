@@ -103,6 +103,8 @@ app.post('/login', (req, res)=> {
   const credential = req.body['credential']
   const password = req.body['password']
 
+  console.log("infos getted from req");
+
   if (type == 'patient') {
     connection.query("Select * from patient where patient.num_ass_soc =  '"+credential+"' AND patient.password = '"+password+"' ;", data, (error, rows, fields)=>{
       if (error) throw error
