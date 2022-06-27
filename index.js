@@ -524,29 +524,24 @@ app.get('/transport/:id', function(req, res)  {
   connection.query("SELECT * FROM transport where transport.id_transport = '"+id+"' ;", (error, rows, fields) => {
     if(rows.length != 0){
       transport = rows[0];
-      console.log(data['id_ets']);
       connection.query("SELECT * FROM ETS where '"+transport["id_ets"]+"' = ETS.id_ets ;", (error2, rows2, fields2 ) => {
         if (error2) throw error2
-        console.log(rows2);
         ets = rows2[0];
       })  ;
 
       connection.query("SELECT * FROM proposition where '"+transport["id_proposition"]+"' = proposition.id_proposition ;", (error2, rows2, fields2 ) => {
-        if (error2) throw error2
-        console.log(rows2);
+        if (error2) throw error2;
         proposition = rows2[0];
       })  ;
 
 
       connection.query("SELECT * FROM demande where '"+proposition["id_demande"]+"' = demande.id_demande ;", (error2, rows2, fields2 ) => {
         if (error2) throw error2
-        console.log(rows2);
         demande = rows2[0];
       })  ;
 
       connection.query("SELECT * FROM patient where '"+demande["id_patient"]+"' = patient.id_patient ;", (error2, rows2, fields2 ) => {
         if (error2) throw error2
-        console.log(rows2);
         patient = rows2[0];
       })  ;
 
