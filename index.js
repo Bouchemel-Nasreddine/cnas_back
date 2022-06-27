@@ -64,7 +64,7 @@ var connection = mysql.createPool({
 // handleDisconnect();
 
 
-const whitelist = ['https://localhost:5000', 'https://cnas2cs.herokuapp.com/']
+const whitelist = ['https://localhost:5000', 'https://cnas2cs.herokuapp.com']
 const corsOptions = {
  origin: function (origin, callback) {
     if(!origin){//for bypassing postman req with  no origin
