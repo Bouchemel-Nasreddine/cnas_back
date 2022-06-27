@@ -64,23 +64,23 @@ var connection = mysql.createPool({
 // handleDisconnect();
 
 
-const whitelist = ['https://localhost:5000', 'https://cnas2cs.herokuapp.com']
-const corsOptions = {
- origin: function (origin, callback) {
-    if(!origin){//for bypassing postman req with  no origin
-      return callback(null, true);
-    }
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
-}
+// const whitelist = ['https://localhost:5000', 'https://cnas2cs.herokuapp.com']
+// const corsOptions = {
+//  origin: function (origin, callback) {
+//     if(!origin){//for bypassing postman req with  no origin
+//       return callback(null, true);
+//     }
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'))
+//     }
+//   }
+// }
 
 //midedleware
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
 app.use(function(req, res, next) {
