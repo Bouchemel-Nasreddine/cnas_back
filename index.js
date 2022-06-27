@@ -103,16 +103,14 @@ app.post('/login', (req, res)=> {
   const credential = req.body['credential']
   const password = req.body['password']
 
-  console.log(type + ' ' + credential + ' ' + password);
 
   if (type == 'patient') {
     connection.query("Select * from patient where patient.num_ass_soc =  '"+credential+"' AND patient.password = '"+password+"' ;", data, (error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
-       console.log(rows)
-        res.send(rows)
+        res.send(rows[0])
       } else {  
-        console.log('login failed')
+        
         res.send('credentials not found')
       }
     })
