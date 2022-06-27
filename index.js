@@ -83,6 +83,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+app.use(function(req, res, next) {
+  res.setTimeout(200);
+  next();
+});
+
 //------------------------root---------------------------------------
 
 app.get('/', (req, res)=>{
@@ -92,20 +97,17 @@ app.get('/', (req, res)=>{
 //-------------------------auth--------------------------------------
 
 app.post('/login', (req, res)=> {
+  console.log("login");
   const data = req.body
   const type = req.body['type'];
   const credential = req.body['credential']
   const password = req.body['password']
 
-   res.setHeader('Access-Control-Allow-Origin', '*');
-   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-   res.setHeader('Access-Control-Allow-Credentials', true);
-
   if (type == 'patient') {
     connection.query("Select * from patient where patient.num_ass_soc =  '"+credential+"' AND patient.password = '"+password+"' ;", data, (error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
-       
+       console.log(rows)
         res.send(rows)
       } else {  
         res.send('credentials not found')
