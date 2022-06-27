@@ -85,6 +85,7 @@ app.use(express.json());
 
 app.use(function(req, res, next) {
   res.setTimeout(200);
+  res.setHeader('Access-Control-Allow-Origin', "*");
   next();
 });
 
