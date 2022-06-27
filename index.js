@@ -110,6 +110,7 @@ app.post('/login', (req, res)=> {
        console.log(rows)
         res.send(rows)
       } else {  
+        console.log('login failed')
         res.send('credentials not found')
       }
     })
