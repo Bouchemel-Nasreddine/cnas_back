@@ -502,6 +502,7 @@ app.get('/transport', (req, res) => {
 
 
 app.get('/transport/:id', function(req, res)  {
+  res.setTimeout(12000)
   const id = req.params.id;
   var transport = {
     "": ""
