@@ -212,10 +212,11 @@ app.post('/demande', (req, res) =>{
 app.get('/demande', (req, res) => {
   var data = {}
 
-  connection.query({query: "Select * from demande left join patient on demande.id_patient = patient.id_patient ", nestedTables : true}, data, (error, rows, fields)=> {
+  connection.query({query: "Select * from demande left join patient on demande.id_patient = patient.id_patient ", nestedTables : true}, (error, results)=> {
     if (error) throw error;
-    if (rows.length != 0) {
-      data = rows;
+    console.log(results);
+    if (results.length != 0) {
+      data = results;
     } else {
       data = [];
     }
