@@ -85,7 +85,7 @@ app.use(express.json());
 
 app.use(function(req, res, next) {
   //console.log(req);
-  res.setTimeout(200);
+  res.setTimeout(2000);
   res.setHeader('Access-Control-Allow-Origin', "*");
   res.header('Access-Control-Allow-Methods', 'GET, POST ,PUT, OPTIONS, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -232,8 +232,9 @@ app.get('/demande/:id', function(req, res)  {
     "": ""
   };
 
-  connection.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, rows, fields) => {
+  connection.query({"SELECT * FROM demande left join patient on (demande.id_patient = patient.id_patient) where demande.id_demande = '":id+"';", nestedTables: true, }, (error, rows, fields) => {
     if(rows.length != 0){
+      console.log(rows);
                   data = rows[0];
                   res.json(data);
               }else{
