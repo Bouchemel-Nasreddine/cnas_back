@@ -204,6 +204,7 @@ app.post('/demande', (req, res) =>{
 
   connection.query("INSERT INTO demande SET? ", data, (error, results, fields) => {
     if (error) throw error;
+    
     res.send(req.body);
   })
 
@@ -211,11 +212,13 @@ app.post('/demande', (req, res) =>{
 
 app.get('/demande', (req, res) => {
   var data = {}
+  var patient = {}
 
   connection.query("Select * from demande; ", (error, results)=> {
     if (error) throw error;
     console.log(results);
     if (results.length != 0) {
+   
       data = results;
     } else {
       data = [];
@@ -232,12 +235,25 @@ app.get('/demande/:id', function(req, res)  {
   var data = {
     "": ""
   };
+  var patient = {};
 
   connection.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, rows, fields) => {
     if (error) throw error;
     console.log(rows)
     if(rows.length != 0){
                   data = rows[0];
+                  connection.query("select * from patient where '"+data['id_patient']+"' = patient.id_patient;", (error, results, fields) =>{
+                    if (error) throw error
+                    if (results.length != 0) {
+                      patient = results[0];
+                    }
+                  } )
+
+                  
+                  var finalData = {
+                    ...data,
+                    "patient": patient
+                  }
                   res.json(data);
               }else{
                   data = 'No data Found..';
@@ -277,6 +293,7 @@ app.get('/demande/patient/:id', (req, res)=>{
   connection.query("SELECT * FROM demande where demande.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error;
     if (rows.length != 0) {
+      //TODO: get patient object too
     res.send(results);
     }
     else {
