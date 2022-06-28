@@ -178,9 +178,10 @@ app.get('/patient', function(req, res)  {
 } )
 
 
-app.get('/patient/:id', function(req, res)  {
+app.get('/patient/:id', async function(req, res)  {
   const id = req.params.id;
-  var data = {}
+  var data = await getPatientById(id);
+  console.log(data);
   connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error
     if (results.length !=0) {
