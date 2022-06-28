@@ -180,7 +180,7 @@ app.get('/patient', function(req, res)  {
 
 app.get('/patient/:id', function(req, res)  {
   const id = req.params.id;
-  var data = getPatientById(id);
+  var data = await getPatientById(id);
   console.log(data);
   if (data != -1) {
     res.send(data);
@@ -641,7 +641,7 @@ function getDemandeById(id) {
   })
 }
 
-function getPatientById(id) {
+async function getPatientById(id) {
   connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error
     if (results.length !=0) {
