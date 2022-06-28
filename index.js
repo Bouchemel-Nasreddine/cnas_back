@@ -252,7 +252,19 @@ app.put('/demande/:id/:etat', (req, res)=>{
   const id = req.params.id;
   const etat = req.params.etat;
 
-  connection.query("UPDATE demande SET demande.etat='"+etat+"' where demande.id_demande = '"+id+"';", (error, results, fields) => {
+  var sqlReq ;
+
+  if (etat != 'valide') {
+    sqlReq = "UPDATE demande SET demande.etat='"+etat+"' where demande.id_demande = '"+id+"';";
+  } else {
+    let date_ob = new Date();
+    let month = date_ob.getMonth + 1;
+    let today = date_ob.getFullYear + '-' + month + '-'+  date_ob.getDate ;
+    print(today);
+    sqlReq = "UPDATE demande SET demande.etat='"+etat+"' AND demande.date_validation='"+today+"' where demande.id_demande = '"+id+"';";
+  }
+
+  connection.query(sqlReq, (error, results, fields) => {
     if (error) throw error;
     res.send("done")
   })
