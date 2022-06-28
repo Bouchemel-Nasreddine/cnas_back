@@ -292,7 +292,7 @@ app.get('/demande/patient/:id', (req, res)=>{
 
   connection.query("SELECT * FROM demande where demande.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error;
-    if (rows.length != 0) {
+    if (results.length != 0) {
       //TODO: get patient object too
     res.send(results);
     }
