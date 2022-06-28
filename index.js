@@ -181,8 +181,11 @@ app.get('/patient', function(req, res)  {
 app.get('/patient/:id', function(req, res)  {
   const id = req.params.id;
   var data = getPatientById(id);
+  console.log(data);
   if (data != -1) {
     res.send(data);
+  } else {
+    res.send("data not found");
   }
 
 } )
