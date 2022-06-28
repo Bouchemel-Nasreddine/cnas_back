@@ -131,7 +131,7 @@ app.post('/login', (req, res)=> {
     })
   } else
   if (type == 'staff_cnas') {
-    connection.query("Select * from staff_cnas where staff_cnas.num_de_travail =  '"+credential+"' AND patient.password = '"+password+"' ;", data, (error, rows, fields)=>{
+    connection.query("Select * from staff_cnas where staff_cnas.code =  '"+credential+"' AND patient.password = '"+password+"' ;", data, (error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
         res.send(rows)
