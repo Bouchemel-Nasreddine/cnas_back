@@ -254,7 +254,7 @@ app.get('/demande/:id', function(req, res)  {
                     ...data,
                     "patient": patient
                   }
-                  res.json(data);
+                  res.json(finalData);
               }else{
                   data = 'No data Found..';
                   res.json(data);
