@@ -1,8 +1,11 @@
 
 const express =require('express');
 const cors = require('cors');
-var mysql      = require('mysql');
-
+var mysql = require('mysql');
+const { 
+  v1: uuidv1,
+  v4: uuidv4,
+} = require('uuid');
 
 // var mysql = require('mysql');
 const PORT =  process.env.PORT || 5000;
@@ -150,7 +153,12 @@ app.post('/patient', (req, res) =>{
 
   const data = req.body;
 
-  connection.query("INSERT INTO patient SET? ", data, (error, results, fields) => {
+  var pat = {
+    ...data,
+    "id_patient": uuidv1,
+  }
+
+  connection.query("INSERT INTO patient SET? ", pat, (error, results, fields) => {
     if (error) throw error;
     res.send(req.body);
   })
@@ -178,9 +186,9 @@ app.get('/patient', function(req, res)  {
 } )
 
 
-app.get('/patient/:id', async function(req, res)  {
+app.get('/patient/:id', function(req, res)  {
   const id = req.params.id;
-  var data = await getPatientById(id);
+  var data = getPatientById(id);
   console.log(data);
   connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error
