@@ -250,6 +250,7 @@ app.get('/demande/:id', function(req, res)  {
                       console.log(patient);
                     }
                   } )                  
+                  console.log(patient)
                   var finalData = {
                     ...data,
                     "patient": patient
