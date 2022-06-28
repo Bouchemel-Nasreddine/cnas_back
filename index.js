@@ -260,7 +260,7 @@ app.put('/demande/:id/:etat', (req, res)=>{
     let date_ob = new Date();
     let month = date_ob.getMonth + 1;
     let today = date_ob.getFullYear + '-' + month + '-'+  date_ob.getDate ;
-    print(today);
+    console.log(today);
     sqlReq = "UPDATE demande SET demande.etat='"+etat+"' AND demande.date_validation='"+today+"' where demande.id_demande = '"+id+"';";
   }
 
