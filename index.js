@@ -180,13 +180,15 @@ app.get('/patient', function(req, res)  {
 
 app.get('/patient/:id', function(req, res)  {
   const id = req.params.id;
-  var data = await getPatientById(id);
-  console.log(data);
-  if (data != -1) {
-    res.send(data);
-  } else {
-    res.send("data not found");
-  }
+  var data = {}
+  connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
+    if (error) throw error
+    if (results.length !=0) {
+      res.send(results[0]);
+    } else {
+      res.send("no data found")
+    }
+  })
 
 } )
 
@@ -321,6 +323,7 @@ app.get('/ets', (req, res) => {
     } else {
       data = [];
     }
+    console.log(data)
     res.json(data);
   })
 
@@ -641,7 +644,7 @@ function getDemandeById(id) {
   })
 }
 
-async function getPatientById(id) {
+function getPatientById(id) {
   connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error
     if (results.length !=0) {
