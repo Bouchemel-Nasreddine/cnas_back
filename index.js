@@ -158,6 +158,8 @@ app.post('/patient', (req, res) =>{
     "id_patient": uuidv1,
   }
 
+  console.log(pat);
+
   connection.query("INSERT INTO patient SET? ", pat, (error, results, fields) => {
     if (error) throw error;
     res.send(req.body);
