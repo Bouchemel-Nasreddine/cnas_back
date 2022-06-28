@@ -180,19 +180,10 @@ app.get('/patient', function(req, res)  {
 
 app.get('/patient/:id', function(req, res)  {
   const id = req.params.id;
-  var data = {
-    "": ""
-  };
-
-  connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, rows, fields) => {
-    if(rows.length != 0){
-                  data = rows[0];
-                  res.json(data);
-              }else{
-                  data = 'No data Found..';
-                  res.json(data);
-              }
-  })
+  var data = getPatientById(id);
+  if (data != -1) {
+    res.send(data);
+  }
 
 } )
 
@@ -390,7 +381,9 @@ app.get('/proposition/:id', function(req, res)  {
 
   connection.query("SELECT * FROM proposition where proposition.id_proposition = '"+id+"';", (error, rows, fields) => {
     if(rows.length != 0){
-                  data = rows;
+                  data = rows[0];
+                  
+
                   res.json(data);
               }else{
                   data = 'No data Found..';
@@ -628,7 +621,36 @@ app.put('/demande/:id/:etat', (req, res)=>{
   })
 })
 
+///////////////////////////////////////////////////////
 
+function getDemandeById(id) {
+  connection.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, results, fields) => {
+    if (error) throw error
+    if (results.length !=0) {
+      let data = results[0];
+      let patient = getPatientById(data["id_patient"]);
+      finalData = {
+        ...data,
+        "patient": patient
+      }
+
+      return finalData;
+    } else {
+      return -1;
+    }
+  })
+}
+
+function getPatientById(id) {
+  connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
+    if (error) throw error
+    if (results.length !=0) {
+      return results[0];
+    } else {
+      return -1;
+    }
+  })
+}
 
 //-----------------------------------------------------
 
