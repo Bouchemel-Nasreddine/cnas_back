@@ -212,7 +212,7 @@ app.post('/demande', (req, res) =>{
 app.get('/demande', (req, res) => {
   var data = {}
 
-  connection.query("Select *, patient from demande left join on demande.id_patient = patient.id_patient", data, (error, rows, fields)=> {
+  connection.query("Select *, patient from demande left join patient on demande.id_patient = patient.id_patient", data, (error, rows, fields)=> {
     if (error) throw error;
     if (rows.length != 0) {
       data = rows;
