@@ -233,6 +233,7 @@ app.get('/demande/:id', function(req, res)  {
   };
 
   connection.query({"SELECT * FROM demande, patient where demande.id_demande = '":id+"' left join patient on (demande.id_patient = patient.id_patient);", nestedTables: true, }, (error, rows, fields) => {
+    if (error) throw error;
     console.log(rows)
     if(rows.length != 0){
                   data = rows[0];
