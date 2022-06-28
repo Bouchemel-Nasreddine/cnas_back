@@ -239,7 +239,6 @@ app.get('/demande/:id', function(req, res)  {
 
   connection.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, rows, fields) => {
     if (error) throw error;
-    console.log(rows)
     if(rows.length != 0){
                   data = rows[0];
                   connection.query("select * from patient where '"+data['id_patient']+"' = patient.id_patient;", (error, results, fields) =>{
@@ -253,7 +252,8 @@ app.get('/demande/:id', function(req, res)  {
                   var finalData = {
                     ...data,
                     "patient": patient
-                  }
+                  };
+                  console.log(finalData);
                   res.json(finalData);
               }else{
                   data = 'No data Found..';
