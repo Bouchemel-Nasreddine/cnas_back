@@ -155,7 +155,7 @@ app.post('/patient', (req, res) =>{
 
   var pat = {
     ...data,
-    "id_patient": uuidv1,
+    "id_patient": uuidv1(),
   }
 
   console.log(pat);
