@@ -316,14 +316,11 @@ app.get('/ets', (req, res) => {
 
   connection.query("Select * from ETS;", data, (error, rows, fields)=> {
     if (error) throw error;
-    console.log("ddddd")
     if (rows.length != 0) {
-      console.log("ddddd")
       data = rows;
     } else {
       data = [];
     }
-    console.log(data)
     res.json(data);
   })
 
@@ -648,7 +645,7 @@ function getPatientById(id) {
   connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error
     if (results.length !=0) {
-      console.log(results);
+      console.log("function: " + results);
       return results[0];
     } else {
       return -1;
