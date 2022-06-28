@@ -258,6 +258,21 @@ app.put('/demande/:id/:etat', (req, res)=>{
   })
 })
 
+app.get('/demande/patient/:id', (req, res)=>{
+  const id = req.params.id;
+  const etat = req.params.etat;
+
+  connection.query("SELECT * FROM demande where demande.id_patient = '"+id+"';", (error, results, fields) => {
+    if (error) throw error;
+    if (rows.length != 0) {
+    res.send(results);
+    }
+    else {
+      res.send('[');
+    }
+  })
+})
+
 
 //-------------------ets--------------------------------
 
