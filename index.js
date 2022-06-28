@@ -645,7 +645,7 @@ function getPatientById(id) {
   connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error
     if (results.length !=0) {
-      console.log("function: " + results);
+      console.log(results);
       return results[0];
     } else {
       return -1;
