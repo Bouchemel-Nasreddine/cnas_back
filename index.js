@@ -242,7 +242,7 @@ app.get('/demande/:id', function(req, res)  {
     if(rows.length != 0){
                   data = rows[0];
                   console.log(data["id_patient"]);
-                  connection.query("select * from patient where '"+data['id_patient']+"' = patient.id_patient;", (error, results, fields) =>{
+                  connection.query("select * from patient wheree '"+data['id_patient']+"' = patient.id_patient;", (error, results, fields) =>{
                     if (error) throw error
                     if (results.length != 0) {
                       patient = results[0];
