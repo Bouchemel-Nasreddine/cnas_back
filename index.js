@@ -212,7 +212,7 @@ app.post('/demande', (req, res) =>{
 app.get('/demande', (req, res) => {
   var data = {}
 
-  connection.query("Select * from demande", data, (error, rows, fields)=> {
+  connection.query({query: "Select * from demande left join patient on demande.id_patient = patient.id_patient ", nestedTables : true}, data, (error, rows, fields)=> {
     if (error) throw error;
     if (rows.length != 0) {
       data = rows;
@@ -232,7 +232,7 @@ app.get('/demande/:id', function(req, res)  {
     "": ""
   };
 
-  connection.query({"SELECT *, patient FROM demande  left join patient on (demande.id_patient = patient.id_patient) where demande.id_demande = '":id+"';", nestedTables: true, }, (error, rows, fields) => {
+  connection.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, rows, fields) => {
     if (error) throw error;
     console.log(rows)
     if(rows.length != 0){
