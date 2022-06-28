@@ -258,8 +258,8 @@ app.put('/demande/:id/:etat', (req, res)=>{
     sqlReq = "UPDATE demande SET demande.etat='"+etat+"' where demande.id_demande = '"+id+"';";
   } else {
     let date_ob = new Date();
-    let month = date_ob.getMonth + 1;
-    let today = date_ob.getFullYear + '-' + month + '-'+  date_ob.getDate ;
+    let month = date_ob.getMonth() + 1;
+    let today = date_ob.getFullYear() + '-' + month + '-'+  date_ob.getDate() ;
     console.log(today);
     sqlReq = "UPDATE demande SET demande.etat='"+etat+"' AND demande.date_validation='"+today+"' where demande.id_demande = '"+id+"';";
   }
