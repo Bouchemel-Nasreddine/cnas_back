@@ -270,7 +270,7 @@ app.post('/demande', (req, res) =>{
 
 
   let values = []
-  const colums = ["id_demande" , "id_patient" , "ville" , "date_creation" , "date_validation", 'date_debut', 'date_fin', 'description', 'etat', 'adresse_hopital', 'adresse_patient' ]
+  const colums = ["id_demande" , "id_patient" , "ville" , "date_creation" , "date_validation", 'date_debut', 'date_fin', 'description', 'etat', 'adresse_hospital', 'adresse_patient' ]
   let colStr = ""
   colums.map(el=>{
     values.push(data[el])
