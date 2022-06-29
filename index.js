@@ -464,7 +464,7 @@ app.get('/proposition/:id', function(req, res)  {
 
   };
 
-
+//
 
   connection.query("SELECT * FROM proposition where proposition.id_proposition = '"+id+"' ;", (error, rows, fields) => {
     if(rows.length != 0){
