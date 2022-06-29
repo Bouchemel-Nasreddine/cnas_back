@@ -197,7 +197,7 @@ app.post('/patient', (req, res) =>{
     colStr += ", "+el
   })
   colStr = colStr.slice(1);
-  const text = 'INSERT INTO patient(${colStr}) VALUES($1, $2,$3, $4 , $5, $6, $7, $8, $9) RETURNING *';
+  const text = `INSERT INTO patient(${colStr}) VALUES($1, $2,$3, $4 , $5, $6, $7, $8, $9) RETURNING *`;
 
   pool.query(text, values, (err, response) => {
     if (err) {
@@ -208,6 +208,25 @@ app.post('/patient', (req, res) =>{
   })
 }  )
 
+app.post('/chauffeur', (req, res) =>{
+  const data = req.body;
+  let values = []
+  const colums = ["id_Chauffeur" , "Nom" , "Prenom" , "NumeroTelephone" , "Id_Operateur"]
+  let colStr = ""
+  colums.map(el=>{
+    values.push(data[el])
+    colStr += ", "+el
+  })
+  colStr = colStr.slice(1);
+  const text = `INSERT INTO chauffeur(${colStr}) VALUES($1, $2,$3, $4 , $5) RETURNING *`
+  pool.query(text, values, (err, response) => {
+    if (err) {
+      console.log(err.stack)
+    } else {
+      res.status(200).send(response.rows[0])
+    }
+  })
+}  )
 
 app.get('/patient', function(req, res)  {
   console.log("getting patients");
