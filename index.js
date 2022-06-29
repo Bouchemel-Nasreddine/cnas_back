@@ -326,37 +326,68 @@ app.get('/demande', function(req, res)  {
 
 
 
+// app.get('/demande/:id', function(req, res)  {
+//   const id = req.params.id;
+//   var data = {
+//     "": ""
+//   };
+//   var patient = {};
+
+//   connection.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, rows, fields) => {
+//     if (error) throw error;
+//     if(rows.length != 0){
+//                   data = rows[0];
+//                   console.log("'"+data['id_patient']+"'");
+//                   connection.query("select * from patient where patient.id_patient = '"+data['id_patient']+"';", (error, results, fields) =>{
+//                     if (error) throw error
+//                     if (results.length != 0) {
+//                       patient = results[0];              
+//                       var finalData = {
+//                         ...data,
+//                         "patient": patient
+//                       };
+//                       console.log(finalData);
+//                       res.json(finalData);
+//                     }
+//                   } )    
+//               }else{
+//                   data = 'No data Found..';
+//                   res.json(data);
+//               }
+//   })
+
+// } )
+
+
+
 app.get('/demande/:id', function(req, res)  {
   const id = req.params.id;
-  var data = {
-    "": ""
-  };
-  var patient = {};
-
-  connection.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, rows, fields) => {
-    if (error) throw error;
-    if(rows.length != 0){
-                  data = rows[0];
-                  console.log("'"+data['id_patient']+"'");
-                  connection.query("select * from patient where patient.id_patient = '"+data['id_patient']+"';", (error, results, fields) =>{
-                    if (error) throw error
-                    if (results.length != 0) {
-                      patient = results[0];              
-                      var finalData = {
-                        ...data,
-                        "patient": patient
-                      };
-                      console.log(finalData);
-                      res.json(finalData);
-                    }
-                  } )    
-              }else{
-                  data = 'No data Found..';
-                  res.json(data);
-              }
+  var data = getPatientById(id);
+  console.log(data);
+  pool.query("SELECT * FROM patient where demande.id_demande = '"+id+"';", (error, results, fields) => {
+    if (error) throw error
+    if (results.length !=0) {
+      var data = results['rows'][0]; 
+      console.log(data);
+      pool.query("SELECT * FROM patient where patient.id_patient = '"+data['id_patient']+"';", (error, results2, fields) => {
+        if (error) throw error
+        if (results2.length != 0) {
+          var pat = results2['rows'][0];
+          console.log(pat);
+          var finalData = {
+            ...data,
+            "patient": pat
+          }
+          res.send(finalData);
+        }
+      } )
+    } else {
+      res.send("no data found")
+    }
   })
 
 } )
+
 
 
 app.put('/demande/:id/:etat', (req, res)=>{
