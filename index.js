@@ -150,7 +150,7 @@ app.post('/login', (req, res)=> {
     pool.query(`Select * from patient where patient.num_ass_soc =  '"+credential+"' AND patient.password = '"+password+"' ;`,(error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
-        res.send(rows['rows'][0]);
+        res.send(rows);
       } else {  
         
         res.send('credentials not found')
