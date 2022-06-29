@@ -147,10 +147,10 @@ app.post('/login', (req, res)=> {
 
 
   if (type == 'patient') {
-    connection.query("Select * from patient where patient.num_ass_soc =  '"+credential+"' AND patient.password = '"+password+"' ;", data, (error, rows, fields)=>{
+    pool.query("Select * from patient where patient.num_ass_soc =  '"+credential+"' AND patient.password = '"+password+"' ;", data, (error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
-        res.send(rows[0])
+        res.send(rows['rows'][0]);
       } else {  
         
         res.send('credentials not found')
@@ -171,7 +171,7 @@ app.post('/login', (req, res)=> {
     connection.query("Select * from staff_cnas where staff_cnas.code =  '"+credential+"' AND staff_cnas.password = '"+password+"' ;", data, (error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
-        res.send(rows)
+        res.send(rows['rows'][0])
       } else {
         res.send('credentials not found')
       }
