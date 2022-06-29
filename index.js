@@ -364,7 +364,7 @@ app.get('/demande/:id', function(req, res)  {
   const id = req.params.id;
   var data = getPatientById(id);
   console.log(data);
-  pool.query("SELECT * FROM patient where demande.id_demande = '"+id+"';", (error, results, fields) => {
+  pool.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, results, fields) => {
     if (error) throw error
     if (results.length !=0) {
       var data = results['rows'][0]; 
