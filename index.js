@@ -188,19 +188,26 @@ app.post('/patient', (req, res) =>{
 
   const data = req.body;
 
-  var pat = {
-    ...data,
-    "id_patient": uuidv1(),
-  }
 
-  console.log(pat);
-
-  connection.query("INSERT INTO patient SET? ", pat, (error, results, fields) => {
-    if (error) throw error;
-    res.send(req.body);
+  let values = []
+  const colums = ["id_patient" , "last_name" , "first_name" , "phone" , "num_ass_soc", 'date_naissance', 'wilaya', 'password', 'adresse' ]
+  let colStr = ""
+  colums.map(el=>{
+    values.push(data[el])
+    colStr += ", "+el
   })
+  colStr = colStr.slice(1);
+  const text = 'INSERT INTO patient(${colStr}) VALUES($1, $2,$3, $4 , $5, $6, $7, $8, $9) RETURNING *';
 
+  pool.query(text, values, (err, response) => {
+    if (err) {
+      console.log(err.stack)
+    } else {
+      res.status(200).send(response.rows[0])
+    }
+  })
 }  )
+
 
 app.get('/patient', function(req, res)  {
   console.log("getting patients");
