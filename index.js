@@ -289,23 +289,40 @@ app.post('/demande', (req, res) =>{
 }  )
 
 
-app.get('/demande', (req, res) => {
-  var data = {}
-  var patient = {}
+app.get('/demande', function(req, res)  {
+  var data = {
+    "": ""
+  };
 
-  connection.query("Select * from demande; ", (error, results)=> {
-    if (error) throw error;
-    console.log(results);
-    if (results.length != 0) {
-   
-      data = results;
-    } else {
-      data = [];
-    }
-    res.send(data);
+  pool.query("SELECT * FROM demande;", (error, rows, fields) => {
+    if (error) throw error
+    if(rows.length != 0){
+                  data = rows;
+                  res.json(data['rows']);
+              }else{
+                  data = 'No data Found..';
+                  res.json(data);
+              }
   })
 
 } )
+
+// app.get('/demande', (req, res) => {
+//   var data = {}
+
+//   po.query("Select * from demande; ", (error, results)=> {
+//     if (error) throw error;
+//     console.log(results);
+//     if (results.length != 0) {
+   
+//       data = results;
+//     } else {
+//       data = [];
+//     }
+//     res.send(data);
+//   })
+
+// } )
 
 
 
