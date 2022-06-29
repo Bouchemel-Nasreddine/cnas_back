@@ -7,86 +7,17 @@ const {
   v4: uuidv4,
 } = require('uuid');
 
-// var mysql = require('mysql');
 const PORT =  process.env.PORT || 5000;
 
 const app = express();
 
-// var connection = mysql.createConnection({
-//   host     : 'localhost',
-//   user     : 'root',
-//   password : '',
-//   database :'cnas'
-// });
-
 const { Pool } = require('pg');
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  poolString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
 });
-  
-var connection = mysql.createPool({
-  host: 'remotemysql.com',
-  user: 'jOPNYDXCCM',
-  password: 'BzAUV81FUK',
-  database: 'jOPNYDXCCM',
-  connectionLimit: 100,
-  multipleStatements: true,
-})
-
-// connection.connect((err)=>{
-//     if(err)
-//     {
-//         console.warn("error in connection")
-//     }
-// });
-
-// var connection;
-
-// function handleDisconnect() {
-//   connection = mysql.createConnection({
-//        host     : 'localhost',
-//        user     : 'root',
-//        password : '',
-//        database :'cnas'
-//      }); // Recreate the connection, since
-//                                                   the old one cannot be reused.
-
-//   connection.connect(function(err) {              // The server is either down
-//     if(err) {                                     // or restarting (takes a while sometimes).
-//       console.log('error when connecting to db:', err);
-//       setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
-//     }                                     // to avoid a hot loop, and to allow our node script to
-//   });                                     // process asynchronous requests in the meantime.
-//                                           If you're also serving http, display a 503 error.
-//   connection.on('error', function(err) {
-//     console.log('db error', err);
-//     if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-//       handleDisconnect();                         // lost due to either server restart, or a
-//     } else {                                      // connnection idle timeout (the wait_timeout
-//       throw err;                                  // server variable configures this)
-//     }
-//   });
-// }
-
-// handleDisconnect();
-
-
-// const whitelist = ['https://localhost:5000', 'https://cnas2cs.herokuapp.com']
-// const corsOptions = {
-//  origin: function (origin, callback) {
-//     if(!origin){//for bypassing postman req with  no origin
-//       return callback(null, true);
-//     }
-//     if (whitelist.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'))
-//     }
-//   }
-// }
 
 //midedleware
 
@@ -148,7 +79,7 @@ app.post('/login', (req, res)=> {
 
 
   if (type == 'patient') {
-    connection.query("Select * from patient where patient.num_ass_soc =  '"+credential+"' AND patient.password = '"+password+"' ;", data, (error, rows, fields)=>{
+    pool.query("Select * from patient where patient.num_ass_soc =  '"+credential+"' AND patient.password = '"+password+"' ;", data, (error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
         res.send(rows[0])
@@ -159,7 +90,7 @@ app.post('/login', (req, res)=> {
     })
   } else
   if (type == 'ets') {
-    connection.query("Select * from ETS where ETS.phone =  '"+credential+"' AND ETS.password = '"+password+"' ;", data, (error, rows, fields)=>{
+    pool.query("Select * from ETS where ETS.phone =  '"+credential+"' AND ETS.password = '"+password+"' ;", data, (error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
         res.send(rows)
@@ -169,7 +100,7 @@ app.post('/login', (req, res)=> {
     })
   } else
   if (type == 'staff_cnas') {
-    connection.query("Select * from staff_cnas where staff_cnas.code =  '"+credential+"' AND staff_cnas.password = '"+password+"' ;", data, (error, rows, fields)=>{
+    pool.query("Select * from staff_cnas where staff_cnas.code =  '"+credential+"' AND staff_cnas.password = '"+password+"' ;", data, (error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
         res.send(rows)
@@ -230,9 +161,7 @@ app.get('/patient', function(req, res)  {
 
 app.get('/patient/:id', function(req, res)  {
   const id = req.params.id;
-  var data = getPatientById(id);
-  console.log(data);
-  pool.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
+  pool.query(`SELECT * FROM patient where patient.id_patient = '"+id+"'`, (error, results, fields) => {
     if (error) throw error
     if (results.length !=0) {
       res.send(results['rows'][0]);
@@ -256,7 +185,7 @@ app.post('/demande', (req, res) =>{
 
   console.log(dem);
 
-  connection.query("INSERT INTO demande SET? ", dem, (error, results, fields) => {
+  pool.query("INSERT INTO demande SET? ", dem, (error, results, fields) => {
     if (error) throw error;
     
     res.send(req.body);
@@ -268,7 +197,7 @@ app.get('/demande', (req, res) => {
   var data = {}
   var patient = {}
 
-  connection.query("Select * from demande; ", (error, results)=> {
+  pool.query("Select * from demande; ", (error, results)=> {
     if (error) throw error;
     console.log(results);
     if (results.length != 0) {
@@ -291,12 +220,12 @@ app.get('/demande/:id', function(req, res)  {
   };
   var patient = {};
 
-  connection.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, rows, fields) => {
+  pool.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, rows, fields) => {
     if (error) throw error;
     if(rows.length != 0){
                   data = rows[0];
                   console.log("'"+data['id_patient']+"'");
-                  connection.query("select * from patient where patient.id_patient = '"+data['id_patient']+"';", (error, results, fields) =>{
+                  pool.query("select * from patient where patient.id_patient = '"+data['id_patient']+"';", (error, results, fields) =>{
                     if (error) throw error
                     if (results.length != 0) {
                       patient = results[0];              
@@ -333,7 +262,7 @@ app.put('/demande/:id/:etat', (req, res)=>{
     sqlReq = "UPDATE demande SET demande.etat='"+etat+"' AND demande.date_validation='"+today+"' where demande.id_demande = '"+id+"';";
   }
 
-  connection.query(sqlReq, (error, results, fields) => {
+  pool.query(sqlReq, (error, results, fields) => {
     if (error) throw error;
     res.send("done")
   })
@@ -343,7 +272,7 @@ app.get('/demande/patient/:id', (req, res)=>{
   const id = req.params.id;
   const etat = req.params.etat;
 
-  connection.query("SELECT * FROM demande where demande.id_patient = '"+id+"';", (error, results, fields) => {
+  pool.query("SELECT * FROM demande where demande.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error;
     if (results.length != 0) {
       //TODO: get patient object too
@@ -367,7 +296,7 @@ app.post('/ets', (req, res) => {
 
   console.log(ets);
 
-  connection.query("INSERT INTO ETS SET?", ets, (error, results, fields)=>{
+  pool.query("INSERT INTO ETS SET?", ets, (error, results, fields)=>{
     if (error) throw error
     res.send(req.body);
   })
@@ -379,7 +308,7 @@ app.get('/ets', (req, res) => {
   var data = {}
 
 
-  connection.query("Select * from ETS;", data, (error, rows, fields)=> {
+  pool.query("Select * from ETS;", data, (error, rows, fields)=> {
     if (error) throw error;
     if (rows.length != 0) {
       data = rows;
@@ -400,7 +329,7 @@ app.get('/ets/:id', function(req, res)  {
     "": ""
   };
 
-  connection.query("SELECT * FROM ETS where ETS.id_ets = '"+id+"';", (error, rows, fields) => {
+  pool.query("SELECT * FROM ETS where ETS.id_ets = '"+id+"';", (error, rows, fields) => {
     if(rows.length != 0){
                   data = rows[0];
                   res.json(data);
@@ -423,7 +352,7 @@ app.post('/proposition', (req, res) => {
 
   console.log(prop);
 
-  connection.query("INSERT INTO proposition SET?", prop, (error, results, fields)=>{
+  pool.query("INSERT INTO proposition SET?", prop, (error, results, fields)=>{
     if (error) throw error
     res.send(req.body);
   })
@@ -433,7 +362,7 @@ app.post('/proposition', (req, res) => {
 app.get('/proposition', (req, res) => {
   var data = {}
 
-  connection.query("Select * from proposition", data, (error, rows, fields)=> {
+  pool.query("Select * from proposition", data, (error, rows, fields)=> {
     if (error) throw error;
     if (rows.length != 0) {
       data = rows;
@@ -467,21 +396,21 @@ app.get('/proposition/:id', function(req, res)  {
 
 
 
-  connection.query("SELECT * FROM proposition where proposition.id_proposition = '"+id+"' ;", (error, rows, fields) => {
+  pool.query("SELECT * FROM proposition where proposition.id_proposition = '"+id+"' ;", (error, rows, fields) => {
     if(rows.length != 0){
       proposition = rows[0];
-      connection.query("SELECT * FROM ETS where '"+proposition["id_ets"]+"' = ETS.id_ets ;", (error2, rows2, fields2 ) => {
+      pool.query("SELECT * FROM ETS where '"+proposition["id_ets"]+"' = ETS.id_ets ;", (error2, rows2, fields2 ) => {
         if (error2) throw error2
         ets = rows2[0];
       })  ;
 
 
-      connection.query("SELECT * FROM demande where '"+proposition["id_demande"]+"' = demande.id_demande ;", (error2, rows2, fields2 ) => {
+      pool.query("SELECT * FROM demande where '"+proposition["id_demande"]+"' = demande.id_demande ;", (error2, rows2, fields2 ) => {
         if (error2) throw error2
         demande = rows2[0];
       })  ;
 
-      connection.query("SELECT * FROM patient where '"+demande["id_patient"]+"' = patient.id_patient ;", (error2, rows2, fields2 ) => {
+      pool.query("SELECT * FROM patient where '"+demande["id_patient"]+"' = patient.id_patient ;", (error2, rows2, fields2 ) => {
         if (error2) throw error2
         patient = rows2[0];
       })  ;
@@ -514,7 +443,7 @@ app.put('/proposition/:id/:etat', (req, res)=>{
   const id = req.params.id;
   const etat = req.params.etat;
 
-  connection.query("UPDATE proposition SET proposition.etat='"+etat+"' where proposition.id_proposition = '"+id+"';", (error, results, fields) => {
+  pool.query("UPDATE proposition SET proposition.etat='"+etat+"' where proposition.id_proposition = '"+id+"';", (error, results, fields) => {
     if (error) throw error;
     res.send("done")
   })
@@ -533,7 +462,7 @@ app.post('/staff_cnas', (req, res) =>{
 
   console.log(st_cnas);
 
-  connection.query("INSERT INTO staff_cnas SET? ", st_cnas, (error, results, fields) => {
+  pool.query("INSERT INTO staff_cnas SET? ", st_cnas, (error, results, fields) => {
     if (error) throw error;
     res.send(req.body); 
   })
@@ -545,7 +474,7 @@ app.get('/staff_cnas', function(req, res)  {
     "": ""
   };
 
-  connection.query("SELECT * FROM staff_cnas;", (error, rows, fields) => {
+  pool.query("SELECT * FROM staff_cnas;", (error, rows, fields) => {
     if(rows.length != 0){
                   data = rows;
                   res.json(data);
@@ -563,7 +492,7 @@ app.get('/staff_cnas/:id', function(req, res)  {
     "": ""
   };
 
-  connection.query("SELECT * FROM staff_cnas where staff_cnas.id_staff_cnas = '"+id+"';", (error, rows, fields) => {
+  pool.query("SELECT * FROM staff_cnas where staff_cnas.id_staff_cnas = '"+id+"';", (error, rows, fields) => {
     if(rows.length != 0){
                   data = rows;
                   res.json(data);
@@ -587,7 +516,7 @@ app.post('/reclamation', (req, res) =>{
 
   console.log(recl);
 
-  connection.query("INSERT INTO reclamation SET? ", recl, (error, results, fields) => {
+  pool.query("INSERT INTO reclamation SET? ", recl, (error, results, fields) => {
     if (error) throw error;
     res.send(req.body);
   })
@@ -599,7 +528,7 @@ app.get('/reclamation', function(req, res)  {
     "": ""
   };
 
-  connection.query("SELECT * FROM reclamation;", (error, rows, fields) => {
+  pool.query("SELECT * FROM reclamation;", (error, rows, fields) => {
     if(rows.length != 0){
                   data = rows;
                   res.json(data);
@@ -617,7 +546,7 @@ app.get('/reclamation/:id', function(req, res)  {
     "": ""
   };
 
-  connection.query("SELECT * FROM reclamation where reclamation.id_reclamation = '"+id+"';", (error, rows, fields) => {
+  pool.query("SELECT * FROM reclamation where reclamation.id_reclamation = '"+id+"';", (error, rows, fields) => {
     if(rows.length != 0){
                   data = rows;
                   res.json(data);
@@ -633,7 +562,7 @@ app.put('/reclamation/:id/:etat', (req, res)=>{
   const id = req.params.id;
   const etat = req.params.etat;
 
-  connection.query("UPDATE reclamation SET reclamation.etat='"+etat+"' where reclamation.id_reclamation = '"+id+"';", (error, results, fields) => {
+  pool.query("UPDATE reclamation SET reclamation.etat='"+etat+"' where reclamation.id_reclamation = '"+id+"';", (error, results, fields) => {
     if (error) throw error;
     res.send("done")
   })
@@ -652,7 +581,7 @@ app.post('/transport', (req, res) =>{
 
   console.log(trans);
 
-  connection.query("INSERT INTO transport SET? ", trans, (error, results, fields) => {
+  pool.query("INSERT INTO transport SET? ", trans, (error, results, fields) => {
     if (error) throw error;
     res.send(req.body);
   })
@@ -662,7 +591,7 @@ app.post('/transport', (req, res) =>{
 app.get('/transport', (req, res) => {
   var data = {}
 
-  connection.query("Select * from transport", data, (error, rows, fields)=> {
+  pool.query("Select * from transport", data, (error, rows, fields)=> {
     if (error) throw error;
     if (rows.length != 0) {
       data = rows;
@@ -697,26 +626,26 @@ app.get('/transport/:id', function(req, res)  {
 
   var proposition = {};
 
-  connection.query("SELECT * FROM transport where transport.id_transport = '"+id+"' ;", (error, rows, fields) => {
+  pool.query("SELECT * FROM transport where transport.id_transport = '"+id+"' ;", (error, rows, fields) => {
     if(rows.length != 0){
       transport = rows[0];
-      connection.query("SELECT * FROM ETS where '"+transport["id_ets"]+"' = ETS.id_ets ;", (error2, rows2, fields2 ) => {
+      pool.query("SELECT * FROM ETS where '"+transport["id_ets"]+"' = ETS.id_ets ;", (error2, rows2, fields2 ) => {
         if (error2) throw error2
         ets = rows2[0];
       })  ;
 
-      connection.query("SELECT * FROM proposition where '"+transport["id_proposition"]+"' = proposition.id_proposition ;", (error2, rows2, fields2 ) => {
+      pool.query("SELECT * FROM proposition where '"+transport["id_proposition"]+"' = proposition.id_proposition ;", (error2, rows2, fields2 ) => {
         if (error2) throw error2;
         proposition = rows2[0];
       })  ;
 
 
-      connection.query("SELECT * FROM demande where '"+proposition["id_demande"]+"' = demande.id_demande ;", (error2, rows2, fields2 ) => {
+      pool.query("SELECT * FROM demande where '"+proposition["id_demande"]+"' = demande.id_demande ;", (error2, rows2, fields2 ) => {
         if (error2) throw error2
         demande = rows2[0];
       })  ;
 
-      connection.query("SELECT * FROM patient where '"+demande["id_patient"]+"' = patient.id_patient ;", (error2, rows2, fields2 ) => {
+      pool.query("SELECT * FROM patient where '"+demande["id_patient"]+"' = patient.id_patient ;", (error2, rows2, fields2 ) => {
         if (error2) throw error2
         patient = rows2[0];
       })  ;
@@ -750,7 +679,7 @@ app.put('/demande/:id/:etat', (req, res)=>{
   const id = req.params.id;
   const etat = req.params.etat;
 
-  connection.query("UPDATE demande SET demande.etat='"+etat+"' where demande.id_demande = '"+id+"';", (error, results, fields) => {
+  pool.query("UPDATE demande SET demande.etat='"+etat+"' where demande.id_demande = '"+id+"';", (error, results, fields) => {
     if (error) throw error;
     res.send("done")
   })
@@ -759,7 +688,7 @@ app.put('/demande/:id/:etat', (req, res)=>{
 ///////////////////////////////////////////////////////
 
 function getDemandeById(id) {
-  connection.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, results, fields) => {
+  pool.query("SELECT * FROM demande where demande.id_demande = '"+id+"';", (error, results, fields) => {
     if (error) throw error
     if (results.length !=0) {
       let data = results[0];
@@ -777,7 +706,7 @@ function getDemandeById(id) {
 }
 
 function getPatientById(id) {
-  connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
+  pool.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error
     if (results.length !=0) {
       console.log(results);
