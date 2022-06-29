@@ -245,23 +245,49 @@ app.get('/patient/:id', function(req, res)  {
 
 //----------------------------demande--------------------------------------------
 
+// app.post('/demande', (req, res) =>{
+
+//   const data = req.body;
+//    var dem = {
+//     ...data,
+//     "id_demande": uuidv1(),
+//   }
+
+//   console.log(dem);
+
+//   connection.query("INSERT INTO demande SET? ", dem, (error, results, fields) => {
+//     if (error) throw error;
+    
+//     res.send(req.body);
+//   })
+
+// }  )
+
+
 app.post('/demande', (req, res) =>{
 
   const data = req.body;
-   var dem = {
-    ...data,
-    "id_demande": uuidv1(),
-  }
 
-  console.log(dem);
 
-  connection.query("INSERT INTO demande SET? ", dem, (error, results, fields) => {
-    if (error) throw error;
-    
-    res.send(req.body);
+  let values = []
+  const colums = ["id_demande" , "id_patient" , "ville" , "date_creation" , "date_validation", 'date_debut', 'date_fin', 'description', 'etat', 'adresse_hopital', 'adresse_patient' ]
+  let colStr = ""
+  colums.map(el=>{
+    values.push(data[el])
+    colStr += ", "+el
   })
+  colStr = colStr.slice(1);
+  const text = `INSERT INTO demande(${colStr}) VALUES($1, $2,$3, $4 , $5, $6, $7, $8, $9, $10, $11) RETURNING *`;
 
+  pool.query(text, values, (err, response) => {
+    if (err) {
+      console.log(err.stack)
+    } else {
+      res.status(200).send(response.rows[0])
+    }
+  })
 }  )
+
 
 app.get('/demande', (req, res) => {
   var data = {}
