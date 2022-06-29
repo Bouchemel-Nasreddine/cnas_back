@@ -235,7 +235,7 @@ app.get('/patient/:id', function(req, res)  {
   connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error
     if (results.length !=0) {
-      res.send(results[0]);
+      res.send(results['rows'][0]);
     } else {
       res.send("no data found")
     }
