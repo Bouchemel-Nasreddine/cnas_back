@@ -398,7 +398,7 @@ app.put('/demande/:id/:etat', (req, res)=>{
 
     sqlReq = "UPDATE demande SET etat='"+etat+"' where id_demande = '"+id+"';";
   
-  connection.query(sqlReq, (error, results, fields) => {
+  pool.query(sqlReq, (error, results, fields) => {
     if (error) throw error;
     res.send(results);
   })
