@@ -147,7 +147,7 @@ app.post('/login', (req, res)=> {
 
 
   if (type == 'patient') {
-    pool.query(`Select * from patient where patient.num_ass_soc =  '"+credential+"' AND patient.password = '"+password+"' ;`,(error, rows, fields)=>{
+    pool.query("Select * from patient where patient.num_ass_soc =  '+credential+' AND patient.password = '"+password+"' ;",(error, rows, fields)=>{
       if (error) throw error
       if (rows.length !=0) {
         res.send(rows);
