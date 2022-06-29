@@ -208,37 +208,16 @@ app.post('/patient', (req, res) =>{
   })
 }  )
 
-app.post('/chauffeur', (req, res) =>{
-  const data = req.body;
-  let values = []
-  const colums = ["id_Chauffeur" , "Nom" , "Prenom" , "NumeroTelephone" , "Id_Operateur"]
-  let colStr = ""
-  colums.map(el=>{
-    values.push(data[el])
-    colStr += ", "+el
-  })
-  colStr = colStr.slice(1);
-  const text = `INSERT INTO chauffeur(${colStr}) VALUES($1, $2,$3, $4 , $5) RETURNING *`
-  pool.query(text, values, (err, response) => {
-    if (err) {
-      console.log(err.stack)
-    } else {
-      res.status(200).send(response.rows[0])
-    }
-  })
-}  )
-
 app.get('/patient', function(req, res)  {
   console.log("getting patients");
   var data = {
     "": ""
   };
 
-  connection.query("SELECT * FROM patient;", (error, rows, fields) => {
+  pool.query("SELECT * FROM patient;", (error, rows, fields) => {
     if (error) throw error
     if(rows.length != 0){
                   data = rows;
-                  console.log(data[0]['id_patient'])
                   res.json(data);
               }else{
                   data = 'No data Found..';
