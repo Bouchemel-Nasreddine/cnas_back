@@ -121,7 +121,9 @@ app.get('/db', async (req, res) => {
 app.post('/db', async (req, res) => {
   try {
     const patient = await pool.connect();
-    const result = await patient.query('INSERT INTO patient VALUES('+uuidv1().toString()+', '+req['last_name']+', '+req['first_name']+', '+req['phone']+', '+req['num_ass_soc']+', '+req['date_naissance']+','+req['wilaya']+','+req['password']+', '+req['adresse']+')');
+    var id = uuidv1();
+    console.log(id);
+    const result = await patient.query('INSERT INTO patient VALUES('+id+', '+req['last_name']+', '+req['first_name']+', '+req['phone']+', '+req['num_ass_soc']+', '+req['date_naissance']+','+req['wilaya']+','+req['password']+', '+req['adresse']+')');
     const results = { 'results': (result) ? result.rows : null};
     res.send(results);
     client.release();
