@@ -118,6 +118,19 @@ app.get('/db', async (req, res) => {
   }
 })
 
+app.post('/db', async (req, res) => {
+  try {
+    const patient = await pool.connect();
+    const result = await patient.query('INSERT INTO patient VALUES('+uuidv1()+', '+req['last_name']+', '+req['first_name']+', '+req['phone']+', '+req['num_ass_soc']+', '+req['date_naissance']+','+req['wilaya']+','+req['password']+', '+req['adresse']+')');
+    const results = { 'results': (result) ? result.rows : null};
+    res.send(results );
+    client.release();
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
+  }
+})
+
 //------------------------root---------------------------------------
 
 app.get('/', (req, res)=>{
