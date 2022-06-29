@@ -427,7 +427,7 @@ app.get('/proposition/:id', function(req, res)  {
 
 
 
-  connection.query("SELECT * FROM proposition where proposition.id_transport = '"+id+"' ;", (error, rows, fields) => {
+  connection.query("SELECT * FROM proposition where proposition.id_proposition = '"+id+"' ;", (error, rows, fields) => {
     if(rows.length != 0){
       proposition = rows[0];
       connection.query("SELECT * FROM ETS where '"+proposition["id_ets"]+"' = ETS.id_ets ;", (error2, rows2, fields2 ) => {
