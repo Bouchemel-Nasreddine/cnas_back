@@ -209,8 +209,14 @@ app.get('/patient/:id', function(req, res)  {
 app.post('/demande', (req, res) =>{
 
   const data = req.body;
+   var dem = {
+    ...data,
+    "id_demande": uuidv1(),
+  }
 
-  connection.query("INSERT INTO demande SET? ", data, (error, results, fields) => {
+  console.log(dem);
+
+  connection.query("INSERT INTO demande SET? ", dem, (error, results, fields) => {
     if (error) throw error;
     
     res.send(req.body);
@@ -314,8 +320,14 @@ app.get('/demande/patient/:id', (req, res)=>{
 
 app.post('/ets', (req, res) => {
   const data = req.body;
+   var ets = {
+    ...data,
+    "id_ets": uuidv1(),
+  }
 
-  connection.query("INSERT INTO ETS SET?", data, (error, results, fields)=>{
+  console.log(ets);
+
+  connection.query("INSERT INTO ETS SET?", ets, (error, results, fields)=>{
     if (error) throw error
     res.send(req.body);
   })
@@ -364,8 +376,14 @@ app.get('/ets/:id', function(req, res)  {
 
 app.post('/proposition', (req, res) => {
   const data = req.body;
+   var prop = {
+    ...data,
+    "id_proposition": uuidv1(),
+  }
 
-  connection.query("INSERT INTO proposition SET?", data, (error, results, fields)=>{
+  console.log(prop);
+
+  connection.query("INSERT INTO proposition SET?", prop, (error, results, fields)=>{
     if (error) throw error
     res.send(req.body);
   })
@@ -387,18 +405,60 @@ app.get('/proposition', (req, res) => {
 
 } )
 
+
 app.get('/proposition/:id', function(req, res)  {
+  res.setTimeout(12000)
   const id = req.params.id;
-  var data = {
+  var proposition = {
     "": ""
   };
 
-  connection.query("SELECT * FROM proposition where proposition.id_proposition = '"+id+"';", (error, rows, fields) => {
-    if(rows.length != 0){
-                  data = rows[0];
-                  
+  var ets = {
+    "":""
+  };
 
-                  res.json(data);
+  var demande = {
+
+  };
+
+  var patient = {
+
+  };
+
+
+
+  connection.query("SELECT * FROM proposition where proposition.id_transport = '"+id+"' ;", (error, rows, fields) => {
+    if(rows.length != 0){
+      proposition = rows[0];
+      connection.query("SELECT * FROM ETS where '"+proposition["id_ets"]+"' = ETS.id_ets ;", (error2, rows2, fields2 ) => {
+        if (error2) throw error2
+        ets = rows2[0];
+      })  ;
+
+
+      connection.query("SELECT * FROM demande where '"+proposition["id_demande"]+"' = demande.id_demande ;", (error2, rows2, fields2 ) => {
+        if (error2) throw error2
+        demande = rows2[0];
+      })  ;
+
+      connection.query("SELECT * FROM patient where '"+demande["id_patient"]+"' = patient.id_patient ;", (error2, rows2, fields2 ) => {
+        if (error2) throw error2
+        patient = rows2[0];
+      })  ;
+
+      var demandeFinal = {
+        ...demande,
+        "patient": patient, 
+      }
+
+      
+
+      var finalData = {
+        "id_proposition": propostion['id_proposition'],
+        "ets": ets,
+        "demandeFinal": demandeFinal,
+        
+      }
               }else{
                   data = 'No data Found..';
                   res.json(data);
@@ -406,6 +466,9 @@ app.get('/proposition/:id', function(req, res)  {
   })
 
 } )
+
+
+
 
 app.put('/proposition/:id/:etat', (req, res)=>{
   const id = req.params.id;
@@ -423,8 +486,14 @@ app.put('/proposition/:id/:etat', (req, res)=>{
 app.post('/staff_cnas', (req, res) =>{
 
   const data = req.body;
+   var st_cnas = {
+    ...data,
+    "id_staff_cnas": uuidv1(),
+  }
 
-  connection.query("INSERT INTO staff_cnas SET? ", data, (error, results, fields) => {
+  console.log(st_cnas);
+
+  connection.query("INSERT INTO staff_cnas SET? ", st_cnas, (error, results, fields) => {
     if (error) throw error;
     res.send(req.body); 
   })
@@ -471,8 +540,14 @@ app.get('/staff_cnas/:id', function(req, res)  {
 app.post('/reclamation', (req, res) =>{
 
   const data = req.body;
+   var recl = {
+    ...data,
+    "id_reclamation": uuidv1(),
+  }
 
-  connection.query("INSERT INTO reclamation SET? ", data, (error, results, fields) => {
+  console.log(recl);
+
+  connection.query("INSERT INTO reclamation SET? ", recl, (error, results, fields) => {
     if (error) throw error;
     res.send(req.body);
   })
@@ -530,8 +605,14 @@ app.put('/reclamation/:id/:etat', (req, res)=>{
 app.post('/transport', (req, res) =>{
 
   const data = req.body;
+   var trans = {
+    ...data,
+    "id_patient": uuidv1(),
+  }
 
-  connection.query("INSERT INTO transport SET? ", data, (error, results, fields) => {
+  console.log(trans);
+
+  connection.query("INSERT INTO transport SET? ", trans, (error, results, fields) => {
     if (error) throw error;
     res.send(req.body);
   })
