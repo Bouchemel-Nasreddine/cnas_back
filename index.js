@@ -218,7 +218,7 @@ app.get('/patient', function(req, res)  {
     if (error) throw error
     if(rows.length != 0){
                   data = rows;
-                  res.json(data);
+                  res.json(data['rows']);
               }else{
                   data = 'No data Found..';
                   res.json(data);
