@@ -232,7 +232,7 @@ app.get('/patient/:id', function(req, res)  {
   const id = req.params.id;
   var data = getPatientById(id);
   console.log(data);
-  connection.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
+  pool.query("SELECT * FROM patient where patient.id_patient = '"+id+"';", (error, results, fields) => {
     if (error) throw error
     if (results.length !=0) {
       res.send(results['rows'][0]);
