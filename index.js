@@ -400,7 +400,7 @@ app.put('/demande/:id/:etat', (req, res)=>{
   
   connection.query(sqlReq, (error, results, fields) => {
     if (error) throw error;
-    res.send("done")
+    res.send(results);
   })
 })
 
