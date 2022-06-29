@@ -19,6 +19,13 @@ const app = express();
 //   database :'cnas'
 // });
 
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
   
 var connection = mysql.createPool({
   host: 'remotemysql.com',
@@ -95,6 +102,21 @@ app.use(function(req, res, next) {
   res.header('Access-Control-Max-Age', '86400');
   next();
 });
+
+//------------------------------db------------------------------
+
+app.get('/db', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM patient');
+    const results = { 'results': (result) ? result.rows : null};
+    res.render('pages/db', results );
+    client.release();
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
+  }
+})
 
 //------------------------root---------------------------------------
 
