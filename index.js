@@ -493,7 +493,7 @@ app.get('/proposition/:id', function(req, res)  {
       
 
       var finalData = {
-        "id_proposition": propostion['id_proposition'],
+        "id_proposition": proposition['id_proposition'],
         "ets": ets,
         "demandeFinal": demandeFinal,
         
