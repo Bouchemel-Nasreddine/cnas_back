@@ -446,7 +446,7 @@ app.get('/proposition', (req, res) => {
 
 
 app.get('/proposition/:id', function(req, res)  {
-  res.setTimeout(12000)
+  res.setTimeout(500000)
   const id = req.params.id;
   var proposition = {
     "": ""
